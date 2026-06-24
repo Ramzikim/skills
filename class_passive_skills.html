@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>직업별 패시브 스킬 정리</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #0f0f13;
+    --bg2:      #16161d;
+    --bg3:      #1e1e28;
+    --border:   rgba(255,255,255,0.07);
+    --border2:  rgba(255,255,255,0.12);
+    --text:     #e8e6f0;
+    --text2:    #9d9ab0;
+    --text3:    #5c596e;
+    --accent:   #7b6ef6;
+    --accent2:  #a89cf7;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+    min-height: 100vh;
+    padding: 0 0 60px;
+  }
+
+  /* Header */
+  .header {
+    padding: 48px 24px 32px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(123,110,246,0.08) 0%, transparent 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: 50%; transform: translateX(-50%);
+    width: 400px; height: 200px;
+    background: radial-gradient(ellipse, rgba(123,110,246,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .header-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 10px;
+  }
+  .header h1 {
+    font-size: clamp(22px, 5vw, 36px);
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .header-sub {
+    margin-top: 10px;
+    font-size: 14px;
+    color: var(--text2);
+  }
+
+  /* Container */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 28px 20px 0;
+  }
+
+  /* Filter chips */
+  .filter-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    align-items: center;
+  }
+  .filter-label {
+    font-size: 11px;
+    color: var(--text3);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-right: 4px;
+  }
+  .chip {
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border2);
+    background: var(--bg2);
+    color: var(--text2);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .chip:hover { border-color: var(--accent); color: var(--text); }
+  .chip.active {
+    background: rgba(123,110,246,0.15);
+    border-color: var(--accent);
+    color: var(--accent2);
+  }
+
+  /* Stats */
+  .stats-bar {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .stat-item { font-size: 12px; color: var(--text3); }
+  .stat-item strong { color: var(--accent2); font-weight: 600; }
+
+  /* Table wrapper */
+  .table-wrap {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--bg2);
+  }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+
+  thead th {
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text3);
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(255,255,255,0.02); }
+
+  td { padding: 12px 14px; vertical-align: top; }
+
+  .col-class  { width: 110px; }
+  .col-skill  { width: 120px; }
+  .col-desc   { min-width: 200px; }
+  .col-stats  { width: 260px; }
+
+  /* Badge */
+  .cls-badge {
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+  .tag-warrior  { background: rgba(123,110,246,0.15); color: #a89cf7; border: 1px solid rgba(123,110,246,0.3); }
+  .tag-archer   { background: rgba(29,158,117,0.12);  color: #5DCAA5; border: 1px solid rgba(29,158,117,0.25); }
+  .tag-mage     { background: rgba(55,138,221,0.12);  color: #85B7EB; border: 1px solid rgba(55,138,221,0.25); }
+  .tag-healer   { background: rgba(99,153,34,0.12);   color: #97C459; border: 1px solid rgba(99,153,34,0.25); }
+  .tag-bard     { background: rgba(186,117,23,0.12);  color: #EF9F27; border: 1px solid rgba(186,117,23,0.25); }
+  .tag-rogue    { background: rgba(216,90,48,0.12);   color: #F0997B; border: 1px solid rgba(216,90,48,0.25); }
+
+  /* Skill name */
+  .skill-name {
+    font-weight: 600;
+    color: var(--text);
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  .skill-cat-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    margin-right: 5px;
+    vertical-align: middle;
+    position: relative; top: -1px;
+  }
+
+  /* Description */
+  .skill-desc {
+    color: var(--text2);
+    font-size: 12.5px;
+    line-height: 1.65;
+  }
+
+  /* Stats list */
+  .stat-list { list-style: none; }
+  .stat-list li {
+    display: flex;
+    gap: 8px;
+    font-size: 12px;
+    line-height: 1.7;
+    align-items: baseline;
+  }
+  .stat-key {
+    color: var(--text3);
+    white-space: nowrap;
+    min-width: 110px;
+    font-size: 11px;
+  }
+  .stat-val {
+    color: var(--accent2);
+    font-weight: 600;
+  }
+
+  /* No results */
+  .no-result {
+    text-align: center;
+    padding: 40px;
+    color: var(--text3);
+    font-size: 14px;
+  }
+
+  /* Category color accents per row */
+  .cat-warrior td:first-child { border-left: 2px solid rgba(123,110,246,0.5); }
+  .cat-archer  td:first-child { border-left: 2px solid rgba(29,158,117,0.5); }
+  .cat-mage    td:first-child { border-left: 2px solid rgba(55,138,221,0.5); }
+  .cat-healer  td:first-child { border-left: 2px solid rgba(99,153,34,0.5); }
+  .cat-bard    td:first-child { border-left: 2px solid rgba(186,117,23,0.5); }
+  .cat-rogue   td:first-child { border-left: 2px solid rgba(216,90,48,0.5); }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    margin-top: 36px;
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  /* Responsive */
+  @media (max-width: 700px) {
+    .col-stats { display: none; }
+    .col-class { width: 80px; }
+    .col-skill { width: 90px; }
+    thead th.col-stats { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-eyebrow">Passive Skills Reference</div>
+  <h1>직업별 패시브 스킬 정리</h1>
+  <p class="header-sub">21개 직업 · 계열별 필터</p>
+</div>
+
+<div class="container">
+
+  <div class="filter-row">
+    <span class="filter-label">계열</span>
+    <button class="chip active" onclick="filter('all', this)">전체</button>
+    <button class="chip" onclick="filter('warrior', this)">⚔️ 전사</button>
+    <button class="chip" onclick="filter('archer',  this)">🏹 궁수</button>
+    <button class="chip" onclick="filter('mage',    this)">🔮 마법사</button>
+    <button class="chip" onclick="filter('healer',  this)">✨ 힐러</button>
+    <button class="chip" onclick="filter('bard',    this)">🎵 음유시인</button>
+    <button class="chip" onclick="filter('rogue',   this)">🗡️ 도적</button>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-item">표시 중 <strong id="count-display">21</strong>개 직업</div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th class="col-class">직업</th>
+          <th class="col-skill">패시브 스킬</th>
+          <th class="col-desc">효과 설명</th>
+          <th class="col-stats">주요 수치</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+  <div class="footer">패시브 스킬 데이터 기준</div>
+
+</div>
+
+<script>
+const CATS = {
+  warrior: { label: '전사 계열',   badge: 'tag-warrior', dot: '#a89cf7' },
+  archer:  { label: '궁수 계열',   badge: 'tag-archer',  dot: '#5DCAA5' },
+  mage:    { label: '마법사 계열', badge: 'tag-mage',    dot: '#85B7EB' },
+  healer:  { label: '힐러 계열',   badge: 'tag-healer',  dot: '#97C459' },
+  bard:    { label: '음유시인 계열',badge: 'tag-bard',   dot: '#EF9F27' },
+  rogue:   { label: '도적 계열',   badge: 'tag-rogue',   dot: '#F0997B' },
+};
+
+const data = [
+  {
+    cat: 'warrior', cls: '전사', skill: '직감',
+    desc: '무방비 공격 시마다 타겟에게 주는 피해가 점점 증가',
+    stats: [['대미지 증가','중첩당 0.01'],['최대 중첩','15'],['지속 시간','60초']]
+  },
+  {
+    cat: 'warrior', cls: '대검전사', skill: '뭉개진 상처',
+    desc: '공격 적중 시 지속 피해(상처) 부여. 적 체력이 낮을수록 피해 증가',
+    stats: [['최소 대미지','10.5'],['최대 대미지','21'],['최대 대미지 적용 체력','30%']]
+  },
+  {
+    cat: 'warrior', cls: '검술사', skill: '선수필승',
+    desc: '적 선제 공격 시 공격력·추가 대미지 획득 (대상마다 1회). 비전투 상태 또는 일섬 사용 시 무조건 발동',
+    stats: [['공격력 증가','0.3'],['추가 대미지','3'],['지속 시간','15초']]
+  },
+  {
+    cat: 'warrior', cls: '기사', skill: '무거운 방패',
+    desc: '방패 강타 피해 증가, 25% 확률 기절+추가 피해. 큰 피해를 받을 때 넘어지지 않고 버텨내며 피해 감소',
+    stats: [['추가 대미지 확률','25%'],['추가 대미지','3'],['방패 강타 피해 증가','0.5'],['버티기 쿨타임','30초'],['버티기 체력 임계','30%'],['버티기 지속','5초'],['버티기 피해 감소','50%']]
+  },
+  {
+    cat: 'archer', cls: '궁수', skill: '순풍',
+    desc: '전투 중 일정 시간마다 급소 회피율·피해 증가 중첩. 급소 회피 미발동 시 중첩 전부 소실',
+    stats: [['급소 회피 확률','중첩당 +8%'],['대미지 증가','중첩당 +6%'],['중첩 획득 간격','5초'],['최대 중첩','5회']]
+  },
+  {
+    cat: 'archer', cls: '석궁사수', skill: '포츈 볼트',
+    desc: '마지막 거스팅 볼트·스프레딩 볼트 사용 시 67% 확률로 추가 탄창 스킬 발동',
+    stats: [['발동 확률','67%'],['발동 대상','거스팅 볼트, 스프레딩 볼트']]
+  },
+  {
+    cat: 'archer', cls: '장궁병', skill: '톱날 화살',
+    desc: '스킬 4회마다 톱날 화살 준비. 해당 스킬 적중 시 상처(지속 피해) 부여. 사용 불가 스킬 사용 시 카운트 초기화',
+    stats: [['상처 지속 대미지','18'],['사용 가능 스킬','쉘 브레이커, 크래시 샷, 플레임 애로우, 데스 스팅어, 데들리 샷, 드래곤 베인']]
+  },
+  {
+    cat: 'mage', cls: '마법사', skill: '오버서지',
+    desc: '소모한 마나 양에 비례해 스킬 피해 증가. 중첩 가능, 스택마다 지속 시간 독립',
+    stats: [['스킬 대미지 증가','마나 1당 0.2%'],['지속 시간','5초'],['최대 스택','50']]
+  },
+  {
+    cat: 'mage', cls: '화염술사', skill: '이그나이트',
+    desc: '치명타 피해 증가. 첫 스킬 공격 시 추가 피해+점화 획득. 익스플로전 사용 시 점화 중첩 전량 소모해 피해 증폭+버닝 소울 획득',
+    stats: [['치명타 피해 증가','0.1'],['추가 대미지','2.25'],['최대 중첩','5'],['중첩당 버닝 소울 증가','10'],['지속 시간','30초']]
+  },
+  {
+    cat: 'mage', cls: '빙결술사', skill: '북풍의 인도자',
+    desc: '크리스탈 엣지·스플릿 슬래시·기본 공격 적중 시 북풍의 가호 중첩. 최대 중첩 시 일정 횟수 공격에 냉기 범위 피해+서리 생성',
+    stats: [['대미지','5'],['필요 중첩','6'],['추가 공격 횟수','6회'],['서리 생성량','50'],['범위','5m'],['지속 시간','40초']]
+  },
+  {
+    cat: 'mage', cls: '전격술사', skill: '증폭',
+    desc: '사용 가능한 최대 마나 증가',
+    stats: [['최대 마나 증가','25%']]
+  },
+  {
+    cat: 'healer', cls: '힐러', skill: '루미너스 샤드',
+    desc: '빛 무리 소환 시 빛의 결정 획득. 윙 오브 엔젤 사용 시 결정 전량 소모 → 적 피해+아군 치유 (소모량 비례)',
+    stats: [['서먼 스프라이트 획득','1~3개'],['서먼 루미너스 획득','10개'],['대미지','0.33초당 중첩×0.025'],['회복량','1초당 중첩×0.001'],['최대 중첩','200개'],['지속 시간','900초']]
+  },
+  {
+    cat: 'healer', cls: '사제', skill: '빛의 칙령',
+    desc: '강타 피해 증가. 소생 효과 아군이 행동불능 피해 받을 시 즉시 체력 회복+피해 감소 (다른 행동불능 방지와 쿨타임 공유)',
+    stats: [['강타 피해 증가','0.1'],['지속 시간','7초'],['받는 피해 감소','80%'],['재발동 쿨타임','180초']]
+  },
+  {
+    cat: 'healer', cls: '수도사', skill: '평안',
+    desc: '공격 적중 시 사용 가능. 즉시 신성력 회복, 기본 공격 피해 증가, 기본 공격 시 모든 스킬 쿨타임 감소',
+    stats: [['신성력 회복','50'],['기본 공격 쿨타임 감소','8%'],['기본 공격 피해 증가','0.1'],['지속 시간','25초'],['재발동 쿨타임','20초']]
+  },
+  {
+    cat: 'healer', cls: '암흑술사', skill: '경계에 선 자',
+    desc: '혼돈의 제례 전체 의식 강화: 죄어오는 죽음(받는 피해 증가), 흑요석 수의(회복 스킬 피해 증가), 거짓 약속(지속 시간 증가)',
+    stats: [['죄어오는 죽음 피해 증가','10%'],['흑요석 수의 피해 증가','15%'],['거짓 약속 지속 시간 증가','3초']]
+  },
+  {
+    cat: 'bard', cls: '음유시인', skill: '활력',
+    desc: '체력 40% 미만 아군 회복 시 추가 지속 회복. 멜로디 쇼크·파인 튜닝 치명타 시 약점 노출 부여 (방어 무시+치명타율 증가)',
+    stats: [['활력 회복량','×15% 8회'],['활력 쿨타임','타겟당 45초'],['약점 노출 방어 무시','50%'],['약점 노출 치명타율','+50%'],['약점 노출 지속','15초']]
+  },
+  {
+    cat: 'bard', cls: '악사', skill: '환희',
+    desc: '연주·기교 스킬로 약화 효과 8회 부여마다 강렬한 피해 발동',
+    stats: [['발동 대미지','10'],['발동 조건','약화 8회']]
+  },
+  {
+    cat: 'bard', cls: '댄서', skill: '꽃과 나비',
+    desc: '일정 거리 이동마다 나비 획득 → 다음 스킬 시 투사체 발사. 일정 시간마다 꽃 획득 → 다음 스킬 시 범위 피해',
+    stats: [['꽃 생성 주기','5초'],['꽃 범위 피해','2.7 / 반경 2.5m'],['나비 생성 거리','10m 이동'],['나비 투사체 피해','1.8 / 최대 3발'],['나비 발사 범위','6m'],['지속 시간','8초']]
+  },
+  {
+    cat: 'rogue', cls: '도적', skill: '퀵 핸즈',
+    desc: '기본 공격 3회마다 모든 스킬 재사용 대기 시간 감소',
+    stats: [['쿨타임 감소','15%']]
+  },
+  {
+    cat: 'rogue', cls: '격투가', skill: '파쇄권',
+    desc: '스킬 공격이 단일 타겟 적중 시 기파가 퍼져 뒤의 적에게 범위 피해',
+    stats: [['범위 대미지','12'],['효과 발동 제한','3초당 1회']]
+  },
+  {
+    cat: 'rogue', cls: '듀얼블레이드', skill: '교차하는 검격',
+    desc: '십자 베기 공격 시 균열 발생, 주변 적 범위 피해',
+    stats: [['범위 대미지','4'],['범위','3.5m'],['발동 스킬','스플릿 슬래시/다운, 하울링 게일/템페스트, 크로스 스트라이크, 파이널 히트']]
+  },
+];
+
+let currentCat = 'all';
+
+function render() {
+  const rows = currentCat === 'all' ? data : data.filter(d => d.cat === currentCat);
+  document.getElementById('count-display').textContent = rows.length;
+
+  if (rows.length === 0) {
+    document.getElementById('tbody').innerHTML =
+      '<tr><td colspan="4"><div class="no-result">해당 계열 직업이 없습니다</div></td></tr>';
+    return;
+  }
+
+  document.getElementById('tbody').innerHTML = rows.map(d => {
+    const c = CATS[d.cat];
+    return `
+      <tr class="cat-${d.cat}">
+        <td class="col-class">
+          <span class="cls-badge ${c.badge}">${d.cls}</span>
+        </td>
+        <td class="col-skill">
+          <div class="skill-name">
+            <span class="skill-cat-dot" style="background:${c.dot}"></span>${d.skill}
+          </div>
+        </td>
+        <td class="col-desc">
+          <div class="skill-desc">${d.desc}</div>
+        </td>
+        <td class="col-stats">
+          <ul class="stat-list">
+            ${d.stats.map(([k,v]) => `
+              <li>
+                <span class="stat-key">${k}</span>
+                <span class="stat-val">${v}</span>
+              </li>`).join('')}
+          </ul>
+        </td>
+      </tr>`;
+  }).join('');
+}
+
+function filter(cat, btn) {
+  currentCat = cat;
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
